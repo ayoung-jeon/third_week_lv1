@@ -22,18 +22,23 @@ public class BoardController {
         return boardService.createBoard(requestDto);
     }
 
+    @GetMapping("/boards/{id}") // 게시글 조회
+    public BoardResponseDto getBoard(@PathVariable Long id) {
+        return boardService.getBoard(id);
+    }
+
     @GetMapping("/boards") // 게시글 목록 조회
     public List<BoardResponseDto> getBoards() {
         return boardService.getBoards();
     }
 
     @PutMapping("/boards/{id}") // 게시글 수정
-    public Long updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
-        return boardService.updateBoard(id, requestDto);
+    public BoardResponseDto updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
+        return boardService.updateBoard(id, requestDto.getPassword(), requestDto);
     }
 
     @DeleteMapping("/boards/{id}") // 게시글 삭제
-    public Long deleteBoard(@PathVariable Long id) {
-        return boardService.deleteBoard(id);
+    public Long deleteBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
+        return boardService.deleteBoard(id, requestDto.getPassword());
     }
 }

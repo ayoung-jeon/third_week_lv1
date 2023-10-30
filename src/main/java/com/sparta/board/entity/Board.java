@@ -17,19 +17,31 @@ import java.time.LocalDateTime;
 public class Board extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // id
+
+    @Column(name = "title", nullable = false)
+    private String title; // 제목
+
     @Column(name = "username", nullable = false)
-    private String username;
+    private String username; // 작성자명
+
+    @Column(name = "password", nullable = false)
+    private String password; // 비밀번호
+
     @Column(name = "contents", nullable = false, length = 500)
-    private String contents;
+    private String contents; // 작성내용
 
     public Board(BoardRequestDto requestDto) {
+        this.title = requestDto.getTitle();
         this.username = requestDto.getUsername();
+        this.password = requestDto.getPassword();
         this.contents = requestDto.getContents();
     }
 
     public void update(BoardRequestDto requestDto) {
+        this.title = requestDto.getTitle();
         this.username = requestDto.getUsername();
+    //    this.password = requestDto.getPassword();
         this.contents = requestDto.getContents();
     }
 }

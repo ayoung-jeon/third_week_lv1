@@ -31,6 +31,12 @@ public class BoardService {
         return boardResponseDto;
     }
 
+    public BoardResponseDto getBoard(Long id) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+        return new BoardResponseDto(board);
+    }
+
 
     public List<BoardResponseDto> getBoards() {
         // DB 조회
@@ -38,21 +44,31 @@ public class BoardService {
     }
 
     @Transactional
-    public Long updateBoard(Long id, BoardRequestDto requestDto) {
+    public BoardResponseDto updateBoard(Long id, String password, BoardRequestDto requestDto) {
         // 해당 게시글이 DB에 존재하는지 확인
-        Board board = findBoard(id);
-        // board 내용 수정
-        board.update(requestDto);
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id)
+        );
 
-        return id;
+        if (!board.getPassword().equals(password)) {
+            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+        }
+
+        board.update(requestDto);
+        return new BoardResponseDto(board);
     }
 
-    public Long deleteBoard(Long id) {
+    public Long deleteBoard(Long id, String password) {
         // 해당 게시글이 DB에 존재하는지 확인
-        Board board = findBoard(id);  //
-        // 개시글 삭제
-        boardRepository.delete(board);
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id)
+        );
 
+        if (!board.getPassword().equals(password)) {
+            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+        }
+
+        boardRepository.delete(board);
         return id;
     }
 
